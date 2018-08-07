@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     [Tooltip("Number of shots per second")]
     public float fireRate = 10f;
     [Tooltip("Velocity of Bullets")]
-    public float bulSpeed = 3f;
+    public float bulForce = 3f;
     [Tooltip("Movement force multiplier")]
     public float forceMult = 10f;
     public float maxSpeed = 5f;
@@ -116,7 +116,7 @@ public class Player : MonoBehaviour
         //Instantiate the bullet in direction of Rstick and set velocity
         GameObject bul = Instantiate(ammo, firePoint.position, firePoint.rotation, GameObject.Find("BulletContainer").transform);
         Rigidbody2D bulRB = bul.GetComponent<Rigidbody2D>();
-        bulRB.AddForce(bul.transform.up * 100f * bulSpeed);
+        bulRB.AddForce(bul.transform.up * 100f * bulForce);
     }
 
     //Shoot bCount bullets in an arc of arcDeg degrees where player aiming
@@ -139,7 +139,7 @@ public class Player : MonoBehaviour
             GameObject tempBul = Instantiate(ammo, firePoint.position, Quaternion.Euler(0f, 0f, firePoint.rotation.eulerAngles.z + (i*spread)), GameObject.Find("BulletContainer").transform);
             Rigidbody2D tempRB = tempBul.GetComponent<Rigidbody2D>();
 
-            tempRB.AddForce(tempRB.transform.up * 100f * bulSpeed);
+            tempRB.AddForce(tempRB.transform.up * 100f * bulForce);
 
         }
     }
