@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     public int maxHealth = 3;
     [Tooltip("Number of shots per second")]
     public float fireRate = 10f;
-    [Tooltip("Velocity of Bullets")]
+    [Tooltip("Force of Bullets")]
     public float bulForce = 3f;
     [Tooltip("Movement force multiplier")]
     public float forceMult = 10f;
@@ -56,7 +56,6 @@ public class Player : MonoBehaviour
     void Update()
     {
         AimFire();
-        Death();
         Thurst();
     }
 
@@ -161,7 +160,16 @@ public class Player : MonoBehaviour
         //If collide with enemy, take damage
         if (col.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            currHealth -= 1;
+            incHealth(-1);
+            healthText.text = "Health: " + currHealth;
+            Destroy(col.gameObject);
+        }
+
+        //If collide enemy bullet, take damage
+
+        else if(col.gameObject.layer == LayerMask.NameToLayer("EnemyBullet"))
+        {
+            incHealth(-1);
             healthText.text = "Health: " + currHealth;
             Destroy(col.gameObject);
         }
@@ -173,6 +181,13 @@ public class Player : MonoBehaviour
     {
         moneyCount += amt;
         moneyText.text = "Money: " + moneyCount;
+    }
+
+    //increment current health by inc and check if dead
+    public void incHealth(int inc)
+    {
+        currHealth += inc;
+        Death();
     }
 
 

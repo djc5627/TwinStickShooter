@@ -37,13 +37,14 @@ public class InputManager : MonoBehaviour {
 
         //Left Stick
         rawL_P1 = new Vector2(Input.GetAxis("LHorizontal_P1"), Input.GetAxis("LVertical_P1"));
-        normL_P1 = rawL_P1.normalized;
-        rotZL_P1 = Mathf.Atan2(normL_P1.y, normL_P1.x) * Mathf.Rad2Deg;
 
         if (rawL_P1.magnitude < deadzoneL_P1)
         {
             rawL_P1 = Vector2.zero;
         }
+
+        normL_P1 = rawL_P1.normalized;
+        rotZL_P1 = Mathf.Atan2(normL_P1.y, normL_P1.x) * Mathf.Rad2Deg;
 
         if (normL_P1.x != 0 || normL_P1.y != 0)
             movedL_P1 = true;
@@ -60,8 +61,6 @@ public class InputManager : MonoBehaviour {
 
         normR_P1 = rawR_P1.normalized;
         rotZR_P1 = Mathf.Atan2(normR_P1.y, normR_P1.x) * Mathf.Rad2Deg;
-
-
 
         if (normR_P1.x != 0 || normR_P1.y != 0)
             movedR_P1 = true;
