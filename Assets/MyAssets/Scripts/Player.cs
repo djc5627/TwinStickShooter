@@ -74,7 +74,8 @@ public class Player : MonoBehaviour
         //If left stick not at default pos rotate the player and move
         if (playerInput.movedL_P1)
         {
-            rb.rotation = playerInput.rotZL_P1 - 90;
+            if (!playerInput.movedR_P1)
+                rb.rotation = playerInput.rotZL_P1 - 90;
             rb.AddForce(playerInput.rawL_P1 * forceMult);
             rb.drag = 0f;
         }
@@ -93,11 +94,12 @@ public class Player : MonoBehaviour
     //Aim from Rstick and fire bullet by firerate
     private void AimFire()
     {
-        //If left stick not at default pos rotate the firepoint and shoot
+        //If right stick not at default pos rotate the firepoint & player and shoot
         if (playerInput.movedR_P1)
         {
             firePoint.rotation = Quaternion.Euler(0f, 0f, playerInput.rotZR_P1 - 90);
             Debug.DrawRay(firePoint.position, firePoint.up, Color.green);
+            rb.rotation = playerInput.rotZR_P1 - 90;
 
             //shoot at firerate = bullets/sec
             if (Time.time > nextFire)
