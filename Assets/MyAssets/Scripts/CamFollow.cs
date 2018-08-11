@@ -22,11 +22,13 @@ public class CamFollow : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+    }
+
+    void LateUpdate()
+    {
         transform.position = new Vector3(player.position.x, player.position.y, transform.position.z);
         CameraZoomOut();
-
-
-
     }
 
     private void CameraZoomOut()
