@@ -20,6 +20,9 @@ public class Player : MonoBehaviour
     [Tooltip("UI Health text")]
     public Text healthText;
     public Text moneyText;
+    public float thrustForceMult = 500f;
+    public float thrustMaxSpeed = 15f;
+    public float thrustStopDrag = 10f;
 
     private int currHealth;
     private int moneyCount = 0;
@@ -198,9 +201,9 @@ public class Player : MonoBehaviour
     {
         if (playerInput.thrustIsPressed)
         {
-            forceMult = 50f;
-            maxSpeed = 13f;
-            stopDrag = 5f;
+            forceMult = thrustForceMult;
+            maxSpeed = thrustMaxSpeed;
+            stopDrag = thrustStopDrag;
         }
         else
         {

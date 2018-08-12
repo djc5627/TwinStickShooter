@@ -54,7 +54,7 @@ public class SpawnEnemies : MonoBehaviour {
         {
             int randIndex = Random.Range(0, enemies.Length);
             Vector2 spawnPos = new Vector2(Random.Range(transform.position.x - width, transform.position.x + width),
-                Random.Range(transform.position.y - height, transform.position.y + height));
+            Random.Range(transform.position.y - height, transform.position.y + height));
             StartCoroutine(SpawnRandomEnemy(spawnPos, randIndex));
             nextSpawn = Time.time + spawnInterval;
         }
@@ -70,24 +70,26 @@ public class SpawnEnemies : MonoBehaviour {
         
         //Link the new enemy to this spawner
         GameObject enemyObj = Instantiate(enemies[index], pos, Quaternion.identity);
-        enemyObj.GetComponent<Enemy>().setLinkedSpawner(this);
+        //enemyObj.GetComponent<Enemy>().setLinkedSpawner(this);
+
+        Debug.Log("Index: " + index + "Obj: " + enemyObj.name);
 
         //TODO: Do this cleaner
         //If the basic, spawn more of them (temp method)
-        if (index == 0)
-        {
-            incEnemyCount(2);
+        //if (index == 0)
+        //{
+        //    incEnemyCount(2);
 
-            Vector2 offset1 = new Vector2(pos.x + .2f, pos.y - .2f);
-            Vector2 offset2 = new Vector2(pos.x - .2f, pos.y - .2f);
+        //    Vector2 offset1 = new Vector2(pos.x + .2f, pos.y - .2f);
+        //    Vector2 offset2 = new Vector2(pos.x - .2f, pos.y - .2f);
 
-            GameObject enemyObj1 = Instantiate(enemies[index], offset1, Quaternion.identity);
-            GameObject enemyObj2 = Instantiate(enemies[index], offset2, Quaternion.identity);
+        //    GameObject enemyObj1 = Instantiate(enemies[index], offset1, Quaternion.identity);
+        //    GameObject enemyObj2 = Instantiate(enemies[index], offset2, Quaternion.identity);
 
-            //Link them all to the same spawner
-            enemyObj1.GetComponent<Enemy>().setLinkedSpawner(this);
-            enemyObj2.GetComponent<Enemy>().setLinkedSpawner(this);
-        }
+        //    //Link them all to the same spawner
+        //    enemyObj1.GetComponent<Enemy>().setLinkedSpawner(this);
+        //    enemyObj2.GetComponent<Enemy>().setLinkedSpawner(this);
+        //}
     }
 
     //Draw rect from spawning bounds
