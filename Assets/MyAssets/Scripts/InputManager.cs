@@ -73,7 +73,7 @@ public class InputManager : MonoBehaviour {
         else
             mapIsPressed = false;
 
-        if (Input.GetButton("Thrust"))
+        if (Input.GetButtonDown("Thrust"))
             thrustIsPressed = true;
         else
             thrustIsPressed = false;

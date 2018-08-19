@@ -20,23 +20,34 @@ public class Player : MonoBehaviour
     [Tooltip("UI Health text")]
     public Text healthText;
     public Text moneyText;
-    public float thrustForceMult = 500f;
-    public float thrustMaxSpeed = 15f;
+    public float thrustForceMult = 10000f;
+    public float thrustMaxSpeed = 200f;
     public float thrustStopDrag = 10f;
+    public float thrustDuration = .2f;
+    [Tooltip("Time between thrust finish and next thrust ready")]
+    public float thrustDelay = .05f;
+    public float firePointOffset = .2f;
+
+    public GameObject ammo;
+    public Transform firePoint;
+    public Transform centerPivot;
+    public ParticleSystem thrustEffect;
+
 
     private int currHealth;
     private int moneyCount = 0;
     private float nextFire = 0f;
+
+    private bool isThrusting = false;
 
     //For setting back to def after thrust
     private float initForceMult;
     private float initMaxSpeed;
     private float initStopDrag;
 
-    public GameObject ammo;
+    
 
     private Rigidbody2D rb;
-    private Transform firePoint;
     private InputManager playerInput;
 
     // Use this for initialization
@@ -51,7 +62,6 @@ public class Player : MonoBehaviour
         healthText.text = "Health: " + currHealth;
         moneyText.text = "Money: " + moneyCount;
         rb = GetComponent<Rigidbody2D>();
-        firePoint = transform.Find("FirePoint");
         playerInput = GetComponent<InputManager>();
     }
 
@@ -59,7 +69,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         AimFire();
-        Thurst();
+        ThurstChecker();
     }
 
     //Move physics here
@@ -100,7 +110,7 @@ public class Player : MonoBehaviour
         //If right stick not at default pos rotate the firepoint & player and shoot
         if (playerInput.movedR_P1)
         {
-            firePoint.rotation = Quaternion.Euler(0f, 0f, playerInput.rotZR_P1 - 90);
+            centerPivot.rotation = Quaternion.Euler(0f, 0f, playerInput.rotZR_P1 - 90);
             Debug.DrawRay(firePoint.position, firePoint.up, Color.green);
             rb.rotation = playerInput.rotZR_P1 - 90;
 
@@ -118,7 +128,7 @@ public class Player : MonoBehaviour
     private void FireBullet()
     {
         //Instantiate the bullet in direction of Rstick and set velocity
-        GameObject bul = Instantiate(ammo, firePoint.position, firePoint.rotation, GameObject.Find("BulletContainer").transform);
+        GameObject bul = Instantiate(ammo, firePoint.position, centerPivot.rotation, GameObject.Find("BulletContainer").transform);
         Rigidbody2D bulRB = bul.GetComponent<Rigidbody2D>();
         bulRB.AddForce(bul.transform.up * 100f * bulForce);
     }
@@ -140,7 +150,7 @@ public class Player : MonoBehaviour
 
         for (int i=-range; i<= range; i++)
         {
-            GameObject tempBul = Instantiate(ammo, firePoint.position, Quaternion.Euler(0f, 0f, firePoint.rotation.eulerAngles.z + (i*spread)), GameObject.Find("BulletContainer").transform);
+            GameObject tempBul = Instantiate(ammo, firePoint.position, Quaternion.Euler(0f, 0f, centerPivot.rotation.eulerAngles.z + (i*spread)), GameObject.Find("BulletContainer").transform);
             Rigidbody2D tempRB = tempBul.GetComponent<Rigidbody2D>();
 
             tempRB.AddForce(tempRB.transform.up * 100f * bulForce);
@@ -195,22 +205,43 @@ public class Player : MonoBehaviour
         Death();
     }
 
+    //Go faster with thrust by changing mov variables
+    private void ThurstChecker()
+    {
+        if (playerInput.thrustIsPressed && !isThrusting)
+        {
+            StartCoroutine(Thurst());
+        }
+
+    }
+
 
     //Go faster with thrust by changing mov variables
-    private void Thurst()
+    IEnumerator Thurst()
     {
-        if (playerInput.thrustIsPressed)
-        {
-            forceMult = thrustForceMult;
-            maxSpeed = thrustMaxSpeed;
-            stopDrag = thrustStopDrag;
-        }
-        else
-        {
-            forceMult = initForceMult;
-            maxSpeed = initMaxSpeed;
-            stopDrag = initStopDrag;
-        }
+        isThrusting = true;
+
+        ParticleSystem effect = Instantiate(thrustEffect, transform);
+        
+
+        //dont allow player to change dir during thrust
+        forceMult = 0f;
+        maxSpeed = thrustMaxSpeed;
+        stopDrag = thrustStopDrag;
+        rb.AddForce(playerInput.normL_P1 * thrustForceMult);
+
+        yield return new WaitForSeconds(thrustDuration);
+
+        forceMult = initForceMult;
+        maxSpeed = initMaxSpeed;
+        stopDrag = initStopDrag;
+
+        effect.Stop();
+        Destroy(effect.gameObject, .5f);
+
+        yield return new WaitForSeconds(thrustDelay);
+        isThrusting = false;
+        yield return null;
         
     }
 }

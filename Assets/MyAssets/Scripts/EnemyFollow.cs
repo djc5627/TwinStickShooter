@@ -54,7 +54,6 @@ public class EnemyFollow : Enemy
         // if collide with player bullet, destroy this
         if (col.gameObject.layer == LayerMask.NameToLayer("PlayerBullet"))
         {
-            Instantiate(cashDrop, transform.position, Quaternion.identity);
             linkedSpawner.incEnemyCount(-1);
             Destroy(gameObject);
             Destroy(col.gameObject);

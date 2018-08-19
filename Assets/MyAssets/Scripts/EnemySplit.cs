@@ -14,7 +14,6 @@ public class EnemySplit : Enemy
     public float forceMult = 5f;
     public float maxSpeed = 2f;
     public float splitScale = .5f;
-    public int health = 3;
 
     // Use this for initialization
     void Start () {
@@ -66,7 +65,6 @@ public class EnemySplit : Enemy
             //if health at 1, die
             if (health == 1)
             {
-                Instantiate(cashDrop, transform.position, Quaternion.identity);
                 linkedSpawner.incEnemyCount(-1);
                 Destroy(col.gameObject);
                 Destroy(gameObject);
