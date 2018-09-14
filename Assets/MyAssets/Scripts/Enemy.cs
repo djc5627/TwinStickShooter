@@ -6,10 +6,12 @@ public abstract class Enemy : MonoBehaviour {
     protected SpawnEnemies linkedSpawner;
     public int health;
 
+    private SpriteRenderer spriteRend;
+
 	// Use this for initialization
-	void Start () {
-		
-	}
+	public void Start () {
+        spriteRend = GetComponent<SpriteRenderer>();
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -28,8 +30,22 @@ public abstract class Enemy : MonoBehaviour {
     //increment health by inc and check if dead
     virtual public void incHealth(int inc)
     {
+        //If taking damage, and have sprite, flash red
+        if (inc <= 0 && spriteRend != null)
+            StartCoroutine(damageFlash());
+            
         health += inc;
         Death();
+    }
+
+    //Flash the sprite red
+    IEnumerator damageFlash()
+    {
+        spriteRend.color = Color.red;
+        yield return new WaitForSeconds(.015f);
+        spriteRend.color = Color.white;
+
+        yield return null;
     }
 
     //Link enemy to the spawner that controls it

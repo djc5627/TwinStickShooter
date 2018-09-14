@@ -22,7 +22,7 @@ public class Bullet : MonoBehaviour {
     private void OnCollisionEnter2D(Collision2D col)
     {
         //If collide with wall
-        if (col.gameObject.layer == LayerMask.NameToLayer("Walls"))
+        if (col.gameObject.layer == LayerMask.NameToLayer("Walls") || col.gameObject.layer == LayerMask.NameToLayer("Door"))
         {
             //Destroy if not bouncy or out of bounces
             if (!isBouncy || bounceCount <= 1)

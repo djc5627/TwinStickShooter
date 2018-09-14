@@ -117,8 +117,9 @@ public class Player : MonoBehaviour
             //shoot at firerate = bullets/sec
             if (Time.time > nextFire)
             {
-                //ShotgunFire(3, 30f);
-                FireBullet();
+                //ShotgunFire(3, 10f);
+                //DefualtFire();
+                BurstFire();
                 nextFire = Time.time + 1 / fireRate;
             }
         }
@@ -133,6 +134,37 @@ public class Player : MonoBehaviour
         bulRB.AddForce(bul.transform.up * 100f * bulForce);
     }
 
+
+    //Fire burst of bullets
+    private void BurstFire()
+    {
+        //Arc within which bullets will be fired
+        float arcDeg = 45f;
+        int bulletCount = 10;
+        for (int i=0; i < bulletCount; i++)
+        {
+            float rotZ = Random.Range(centerPivot.rotation.eulerAngles.z - arcDeg / 2, centerPivot.rotation.eulerAngles.z + arcDeg / 2);
+
+            GameObject tempBul = Instantiate(ammo, firePoint.position, Quaternion.Euler(0f, 0f, rotZ), GameObject.Find("BulletContainer").transform);
+            Rigidbody2D tempRB = tempBul.GetComponent<Rigidbody2D>();
+
+            tempRB.AddForce(tempRB.transform.up * 100f * bulForce);
+        }
+    }
+
+    //The default firing mode
+    private void DefualtFire()
+    {
+        //Instantiate the bullet in direction of Rstick and set velocity
+        Vector3 offset = firePoint.TransformVector(new Vector3(.2f, 0f, 0f));
+        GameObject bul1 = Instantiate(ammo, firePoint.position + offset, centerPivot.rotation, GameObject.Find("BulletContainer").transform);
+        GameObject bul2 = Instantiate(ammo, firePoint.position - offset, centerPivot.rotation, GameObject.Find("BulletContainer").transform);
+        Rigidbody2D bulRB1 = bul1.GetComponent<Rigidbody2D>();
+        Rigidbody2D bulRB2 = bul2.GetComponent<Rigidbody2D>();
+        bulRB1.AddForce(bul1.transform.up * 100f * bulForce);
+        bulRB2.AddForce(bul2.transform.up * 100f * bulForce);
+    }
+
     //Shoot bCount bullets in an arc of arcDeg degrees where player aiming
     //bCount MUST BE ODD
     private void ShotgunFire(int bCount, float arcDeg)
@@ -143,7 +175,6 @@ public class Player : MonoBehaviour
             Debug.Log("Bullet count must be odd for shotgun!!!");
             return;
         }
-
         int range = (bCount - 1) / 2;
         //angle between each bullet to cover arcDeg
         float spread = arcDeg / (bCount - 1);  
